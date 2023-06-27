@@ -1,0 +1,26 @@
+- name: Generate server details HTML report
+  hosts: all
+  gather_facts: true
+  vars:
+    email_recipients: "yasheshlele@yahoo.com,yasheshlele@gmail.com"
+    email_subject: "Server Details Report"
+  tasks:
+    - name: Render Jinja2 template
+      template:
+        src: servertemplate.j2
+        dest: ./server-details.html
+      delegate_to: localhost
+      run_once: true
+    
+    - name: Read HTML file contents
+      slurp:
+        src: ./server-details.html
+      delegate_to: localhost  
+      register: html_file
+
+    - name: Send email
+      mail:
+        subject: "{{ email_subject }}"
+        to: "{{ email_recipients }}"
+        body: "{{ html_file.content | b64decode }}"
+        content_type: text/html

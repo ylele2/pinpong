@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Server Details</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+    }
+    tr:nth-child(even){background-color: #f2f2f2}
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Server Details</h1>
+  <table>
+    <tr>
+      <th>Server Name</th>
+      <th>IP Address</th>
+      <th>OS</th>
+      <th>Memory</th>
+      <th>CPU Cores</th>
+      <th>Disk Space</th>
+    </tr>
+    {% for host in groups['all'] %}
+    <tr>
+      <td>{{ hostvars[host].inventory_hostname }}</td>
+      <td>{{ hostvars[host].ansible_host }}</td>
+      <td>{{ hostvars[host].ansible_distribution }} {{ hostvars[host].ansible_distribution_version }}</td>
+      <td>{{ hostvars[host].ansible_memtotal_mb }} MB</td>
+      <td>{{ hostvars[host].ansible_processor_cores }}</td>
+      <td>{{ hostvars[host].ansible_mounts[0].size_available | int / 1024 / 1024 / 1024 }} GB</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
